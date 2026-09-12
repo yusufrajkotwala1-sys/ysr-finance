@@ -70,24 +70,37 @@ body{font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--ink)
 .period-tab.active{background:var(--card);color:var(--accent);box-shadow:0 1px 4px rgba(0,0,0,.1)}
 /* TABLE */
 .table-card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden}
-.table-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border)}
+.table-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px}
 .table-header h3{font-size:15px;font-weight:600}
 .table-filters{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .table-filters select,.table-filters input{padding:7px 12px;border:1.5px solid var(--border);border-radius:7px;font-family:inherit;font-size:13px;color:var(--ink);background:var(--card)}
 .table-filters select:focus,.table-filters input:focus{outline:none;border-color:var(--accent)}
 table{width:100%;border-collapse:collapse}
 th{text-align:left;padding:10px 16px;font-size:11px;font-weight:600;color:var(--ink-3);letter-spacing:.5px;border-bottom:1px solid var(--border);background:var(--surface)}
-td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:13.5px}
+td{padding:10px 16px;border-bottom:1px solid var(--border);font-size:13.5px}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:#fafbff}
+/* INLINE EDIT ROW */
+tr.inline-row td{background:var(--accent-bg)!important;padding:6px 8px}
+tr.inline-row td:first-child{padding-left:16px}
+tr.inline-row td:last-child{padding-right:16px}
+.inline-row input,.inline-row select{width:100%;padding:5px 8px;border:1.5px solid var(--accent);border-radius:6px;font-family:inherit;font-size:13px;color:var(--ink);background:#fff;min-width:0}
+.inline-row input:focus,.inline-row select:focus{outline:none}
+.inline-type-sel{display:flex;gap:4px}
+.inline-type-sel button{flex:1;padding:5px 4px;border:1.5px solid var(--border);border-radius:6px;font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;background:var(--card);color:var(--ink-2);transition:all .15s;white-space:nowrap}
+.inline-type-sel button.active-income{background:var(--green-bg);color:var(--green);border-color:var(--green)}
+.inline-type-sel button.active-expense{background:var(--red-bg);color:var(--red);border-color:var(--red)}
+/* BADGES */
 .badge{display:inline-flex;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;text-transform:capitalize}
 .badge-income{background:var(--green-bg);color:var(--green)}
 .badge-expense{background:var(--red-bg);color:var(--red)}
 .amount-income{color:var(--green);font-family:'DM Mono',monospace;font-weight:500}
 .amount-expense{color:var(--red);font-family:'DM Mono',monospace;font-weight:500}
 .action-btns{display:flex;gap:6px}
-.icon-btn{padding:5px 8px;border-radius:6px;border:1px solid var(--border);background:var(--card);cursor:pointer;color:var(--ink-2);transition:all .15s;font-size:13px}
+.icon-btn{padding:5px 8px;border-radius:6px;border:1px solid var(--border);background:var(--card);cursor:pointer;color:var(--ink-2);transition:all .15s;font-size:13px;white-space:nowrap}
 .icon-btn:hover{background:var(--surface)}
+.icon-btn.save-row{background:var(--accent);color:#fff;border-color:var(--accent)}
+.icon-btn.save-row:hover{background:var(--accent-dark)}
 .icon-btn.del:hover{background:var(--red-bg);color:var(--red);border-color:var(--red)}
 /* MODAL */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(15,20,40,.45);z-index:200;align-items:center;justify-content:center}
@@ -125,10 +138,66 @@ tr:hover td{background:#fafbff}
 .user-row:last-child{border-bottom:none}
 .btn-remove{background:var(--red-bg);color:var(--red);border:none;border-radius:7px;padding:6px 12px;font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s}
 .btn-remove:hover{background:var(--red);color:#fff}
+/* INFO PANEL */
+.info-panel{background:var(--accent-bg);border:1px solid #bfdbfe;border-radius:var(--radius);padding:16px 20px;margin-bottom:20px;font-size:13px;line-height:1.7;color:var(--ink-2)}
+.info-panel strong{color:var(--accent)}
+.info-panel code{background:#dbeafe;padding:1px 6px;border-radius:4px;font-family:'DM Mono',monospace;font-size:12px;color:var(--accent-dark)}
+/* PAYMENTS */
+.pay-tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:3px;width:fit-content;margin-bottom:24px}
+.pay-tab{padding:6px 18px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;color:var(--ink-2);transition:all .15s;user-select:none}
+.pay-tab.active{background:var(--card);color:var(--accent);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.pay-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.pay-card{background:var(--card);border-radius:var(--radius);padding:16px 20px;border:1px solid var(--border)}
+.pay-card .label{font-size:11px;color:var(--ink-3);font-weight:500;margin-bottom:6px}
+.pay-card .val{font-size:22px;font-weight:600;font-family:'DM Mono',monospace}
+.pay-card.c-paid .val{color:var(--green)}
+.pay-card.c-overdue .val{color:var(--red)}
+.pay-card.c-soon .val{color:var(--amber)}
+.pay-card.c-total .val{color:var(--accent)}
+.pay-grid{display:grid;gap:12px}
+.pay-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;display:flex;align-items:center;gap:16px;transition:box-shadow .15s}
+.pay-item:hover{box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.pay-item.status-paid{border-left:4px solid var(--green)}
+.pay-item.status-overdue{border-left:4px solid var(--red)}
+.pay-item.status-soon{border-left:4px solid var(--amber)}
+.pay-item.status-upcoming{border-left:4px solid var(--border)}
+.pay-item.status-inactive{opacity:.5;border-left:4px solid var(--border)}
+.pay-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.pay-icon.status-paid{background:var(--green-bg)}
+.pay-icon.status-overdue{background:var(--red-bg)}
+.pay-icon.status-soon{background:var(--amber-bg)}
+.pay-icon.status-upcoming{background:var(--accent-bg)}
+.pay-icon.status-inactive{background:var(--surface)}
+.pay-meta{flex:1;min-width:0}
+.pay-payee{font-weight:600;font-size:15px;margin-bottom:2px}
+.pay-detail{font-size:12px;color:var(--ink-3)}
+.pay-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.pay-amount{font-family:'DM Mono',monospace;font-size:16px;font-weight:600;color:var(--ink)}
+.pay-status-badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.psb-paid{background:var(--green-bg);color:var(--green)}
+.psb-overdue{background:var(--red-bg);color:var(--red)}
+.psb-soon{background:var(--amber-bg);color:var(--amber)}
+.psb-upcoming{background:var(--accent-bg);color:var(--accent)}
+.psb-inactive{background:var(--surface);color:var(--ink-3)}
+.pay-actions{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;justify-content:flex-end}
+.btn-mark-paid{background:var(--green);color:#fff;border:none;border-radius:7px;padding:5px 12px;font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s}
+.btn-mark-paid:hover{opacity:.85}
+.btn-mark-unpaid{background:var(--surface);color:var(--ink-2);border:1px solid var(--border);border-radius:7px;padding:5px 12px;font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s}
+.btn-mark-unpaid:hover{background:var(--border)}
+.pay-month-sel{padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:14px;color:var(--ink);background:var(--card)}
+/* SETUP TABLE */
+.setup-tbl{width:100%;border-collapse:collapse}
+.setup-tbl th{text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--ink-3);letter-spacing:.5px;border-bottom:1px solid var(--border);background:var(--surface)}
+.setup-tbl td{padding:11px 14px;border-bottom:1px solid var(--border);font-size:13.5px;vertical-align:middle}
+.setup-tbl tr:last-child td{border-bottom:none}
+.setup-tbl tr:hover td{background:#fafbff}
+.toggle-active{background:none;border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-family:inherit;font-size:12px;cursor:pointer;transition:all .15s;color:var(--ink-2)}
+.toggle-active.on{background:var(--green-bg);color:var(--green);border-color:var(--green)}
+.toggle-active.off{background:var(--red-bg);color:var(--red);border-color:var(--red)}
 /* MISC */
 .empty{text-align:center;padding:40px;color:var(--ink-3)}
 .section{display:none}.section.active{display:block}
-.toast{position:fixed;bottom:28px;right:28px;background:var(--ink);color:#fff;padding:12px 20px;border-radius:10px;font-size:13.5px;font-weight:500;z-index:999;transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none}
+.toast{position:fixed;bottom:28px;right:28px;background:var(--ink);color:#fff;padding:12px 20px;border-radius:10px;font-size:13.5px;font-weight:500;z-index:999;transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none;max-width:340px}
 .toast.show{transform:translateY(0);opacity:1}
 </style>
 </head>
@@ -169,6 +238,10 @@ tr:hover td{background:#fafbff}
       <div class="nav-item" data-section="budget">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-6"/></svg>
         Budget
+      </div>
+      <div class="nav-item" data-section="payments">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+        Payments Due
       </div>
       <div class="nav-item admin-only" data-section="admin" style="display:none">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg>
@@ -213,14 +286,19 @@ tr:hover td{background:#fafbff}
         <div class="table-card">
           <div class="table-header">
             <h3>All Transactions</h3>
-            <div class="table-filters">
-              <select id="filter-type"><option value="">All types</option><option value="income">Income</option><option value="expense">Expense</option></select>
-              <select id="filter-cat"><option value="">All categories</option></select>
-              <input type="month" id="filter-month"/>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <div class="table-filters">
+                <select id="filter-type"><option value="">All types</option><option value="income">Income</option><option value="expense">Expense</option></select>
+                <select id="filter-cat"><option value="">All categories</option></select>
+                <input type="month" id="filter-month"/>
+              </div>
+              <button class="btn btn-primary btn-sm" id="add-inline-btn">+ Add row</button>
             </div>
           </div>
-          <table><thead><tr><th>Date</th><th>Type</th><th>Category</th><th>Description</th><th>Amount</th><th>Actions</th></tr></thead>
-          <tbody id="tx-tbody"></tbody></table>
+          <table>
+            <thead><tr><th>Date</th><th>Type</th><th>Category</th><th>Description</th><th>Amount</th><th>Actions</th></tr></thead>
+            <tbody id="tx-tbody"></tbody>
+          </table>
         </div>
       </div>
 
@@ -233,8 +311,51 @@ tr:hover td{background:#fafbff}
         <div class="budget-grid" id="budget-grid"></div>
       </div>
 
+      <!-- PAYMENTS DUE -->
+      <div id="section-payments" class="section">
+        <!-- Tab bar -->
+        <div class="pay-tabs">
+          <div class="pay-tab active" data-ptab="monthly">This Month</div>
+          <div class="pay-tab" data-ptab="setup">Setup / Manage</div>
+        </div>
+
+        <!-- MONTHLY VIEW -->
+        <div id="pay-monthly-view">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+            <select class="pay-month-sel" id="pay-month-sel"></select>
+            <div style="font-size:13px;color:var(--ink-3)" id="pay-month-note"></div>
+          </div>
+          <div class="pay-summary" id="pay-summary-cards"></div>
+          <div class="pay-grid" id="pay-grid"></div>
+        </div>
+
+        <!-- SETUP VIEW (admin only) -->
+        <div id="pay-setup-view" style="display:none">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+            <p style="color:var(--ink-2);font-size:13px">Define recurring payments. They appear every month in the Payments Due view.</p>
+            <button class="btn btn-primary btn-sm" id="add-payment-btn">+ Add payment</button>
+          </div>
+          <div class="table-card">
+            <table class="setup-tbl">
+              <thead><tr><th>Payee</th><th>Amount</th><th>Due Day</th><th>Category</th><th>Description</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="pay-setup-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <!-- ADMIN -->
       <div id="section-admin" class="section">
+        <!-- Firebase info panel -->
+        <div class="info-panel">
+          <strong>Firebase Collections used by this app</strong><br>
+          <code>users</code> — one document per user (uid as doc ID): <em>name, email, role</em><br>
+          <code>transactions</code> — one document per transaction: <em>type, date, amount, category, description, createdBy, createdAt, updatedAt</em><br>
+          <code>budgets</code> — one document per category/month budget: <em>month (YYYY-MM), category, amount</em><br>
+          <code>payment_templates</code> — recurring payment setup: <em>payee, amount, dueDay, category, description, active</em><br>
+          <code>payment_records</code> — monthly completion tracking: <em>templateId, month, paid, paidDate, paidBy</em><br>
+          <code>settings/categories</code> — single document with two arrays: <em>income[ ], expense[ ]</em>
+        </div>
         <div class="admin-section">
           <div class="admin-section-header"><h3>Users</h3><button class="btn btn-primary btn-sm" id="add-user-btn">+ Add user</button></div>
           <div class="admin-section-body"><div id="user-list"></div></div>
@@ -253,7 +374,7 @@ tr:hover td{background:#fafbff}
   </div>
 </div>
 
-<!-- TRANSACTION MODAL -->
+<!-- TRANSACTION MODAL (from topbar button) -->
 <div class="modal-bg" id="tx-modal">
   <div class="modal">
     <h3 id="tx-modal-title">Add Transaction</h3>
@@ -294,11 +415,33 @@ tr:hover td{background:#fafbff}
     <h3 id="user-modal-title">Add User</h3>
     <div class="field"><label>Display Name</label><input type="text" id="um-name" placeholder="Jane Doe"/></div>
     <div class="field"><label>Email</label><input type="email" id="um-email" placeholder="jane@example.com"/></div>
-    <div class="field"><label>Password <span id="um-pass-hint" style="color:var(--ink-3);font-weight:400">(leave blank to keep unchanged)</span></label><input type="password" id="um-pass" placeholder="Min 6 characters"/></div>
+    <div class="field">
+      <label>Password <span id="um-pass-hint" style="color:var(--ink-3);font-weight:400;display:none">(leave blank to keep unchanged)</span></label>
+      <input type="password" id="um-pass" placeholder="Min 6 characters"/>
+    </div>
     <div class="field"><label>Role</label><select id="um-role"><option value="user">User</option><option value="admin">Admin</option></select></div>
+    <div class="debug-box" id="user-err"></div>
     <div class="modal-footer">
       <button class="btn btn-secondary" id="um-cancel-btn">Cancel</button>
       <button class="btn btn-primary" id="um-save-btn">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAYMENT TEMPLATE MODAL -->
+<div class="modal-bg" id="pay-modal">
+  <div class="modal">
+    <h3 id="pay-modal-title">Add Payment</h3>
+    <div class="field"><label>Payee / Biller Name</label><input type="text" id="pm-payee" placeholder="e.g. Netflix, Rent, Electricity"/></div>
+    <div class="form-row">
+      <div class="field"><label>Expected Amount</label><input type="number" id="pm-amount" placeholder="0.00" min="0" step="0.01"/></div>
+      <div class="field"><label>Due Day of Month</label><input type="number" id="pm-dueday" placeholder="e.g. 15" min="1" max="31"/></div>
+    </div>
+    <div class="field"><label>Category</label><select id="pm-category"></select></div>
+    <div class="field"><label>Description / Notes</label><input type="text" id="pm-desc" placeholder="Optional notes…"/></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="pm-cancel-btn">Cancel</button>
+      <button class="btn btn-primary" id="pm-save-btn">Save</button>
     </div>
   </div>
 </div>
@@ -325,31 +468,40 @@ import { getFirestore, doc, setDoc, getDoc, getDocs, addDoc, updateDoc, deleteDo
          collection, query, orderBy, onSnapshot, serverTimestamp }
                                    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// ── CONFIG ──────────────────────────────────────────────────────────
-const app = initializeApp({
+// ── FIREBASE CONFIG ──────────────────────────────────────────────────
+const FB_CONFIG = {
   apiKey:            "AIzaSyDORNewQ8Vc4Egze1EaMVzVqt4wXIWE6P4",
   authDomain:        "ysr-exp-inc-app.firebaseapp.com",
   projectId:         "ysr-exp-inc-app",
   storageBucket:     "ysr-exp-inc-app.firebasestorage.app",
   messagingSenderId: "650389755744",
   appId:             "1:650389755744:web:b0720654a079eb87257005"
-});
-const auth = getAuth(app);
-const db   = getFirestore(app);
+};
 
-// ── STATE ───────────────────────────────────────────────────────────
-let currentUser  = null;
-let userProfile  = null;
-let transactions = [];
-let budgets      = [];
-let categories   = { income: [], expense: [] };
+// Primary app — the logged-in admin session
+const primaryApp  = initializeApp(FB_CONFIG, 'primary');
+const auth        = getAuth(primaryApp);
+const db          = getFirestore(primaryApp);
+
+// Secondary app — used ONLY to create new users without disturbing the admin session
+const secondaryApp = initializeApp(FB_CONFIG, 'secondary');
+const authSecondary = getAuth(secondaryApp);
+
+// ── STATE ────────────────────────────────────────────────────────────
+let currentUser   = null;
+let userProfile   = null;
+let transactions  = [];
+let budgets       = [];
+let categories    = { income: [], expense: [] };
 let currentPeriod = 'week';
 let editingTxId   = null;
 let currentTxType = 'income';
 let editingCatType = null;
 let editingCatOld  = null;
 let editingUserId  = null;
-let unsubTx        = null;
+let inlineRowActive = false;
+let inlineRowType   = 'income';
+let unsubTx         = null;
 
 const DEFAULT_CATS = {
   income:  ['Salary','Freelance','Investment','Rental','Business','Gift','Bonus','Other Income'],
@@ -357,21 +509,22 @@ const DEFAULT_CATS = {
             'Education','Shopping','Subscriptions','Insurance','Fuel','Savings','Other Expense']
 };
 
-// ── HELPERS ─────────────────────────────────────────────────────────
-const $  = id => document.getElementById(id);
+// ── HELPERS ──────────────────────────────────────────────────────────
+const $   = id => document.getElementById(id);
 const fmt = n  => '$' + Math.abs(Number(n)).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-const today = () => new Date().toISOString().split('T')[0];
-const currentYM = () => { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; };
+const today   = () => new Date().toISOString().split('T')[0];
+const curYM   = () => { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; };
+const catOpts = type => (categories[type]||[]).map(c=>`<option value="${c}">${c}</option>`).join('');
 
 function toast(msg) {
   const t = $('toast');
   t.textContent = msg;
   t.classList.add('show');
-  clearTimeout(t._timer);
-  t._timer = setTimeout(() => t.classList.remove('show'), 3200);
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 3400);
 }
 
-// ── AUTH STATE ──────────────────────────────────────────────────────
+// ── AUTH STATE ───────────────────────────────────────────────────────
 onAuthStateChanged(auth, async user => {
   if (user) {
     currentUser = user;
@@ -379,27 +532,30 @@ onAuthStateChanged(auth, async user => {
     await loadCategories();
     initApp();
   } else {
-    currentUser = null;
-    userProfile = null;
+    currentUser = null; userProfile = null;
     $('auth-screen').style.display = 'flex';
     $('app').style.display = 'none';
-    $('login-btn').disabled = false;
-    $('login-btn').textContent = 'Sign in';
+    resetLoginBtn();
   }
 });
 
-// ── FIRESTORE HELPERS ────────────────────────────────────────────────
+function resetLoginBtn() {
+  $('login-btn').disabled = false;
+  $('login-btn').textContent = 'Sign in';
+}
+
+// ── PROFILE & CATEGORIES ─────────────────────────────────────────────
 async function loadProfile() {
   try {
-    const snap = await getDoc(doc(db, 'users', currentUser.uid));
+    const snap = await getDoc(doc(db,'users',currentUser.uid));
     if (snap.exists()) {
       userProfile = snap.data();
     } else {
       userProfile = { name: currentUser.email.split('@')[0], email: currentUser.email, role: 'admin' };
-      await setDoc(doc(db, 'users', currentUser.uid), userProfile);
+      await setDoc(doc(db,'users',currentUser.uid), userProfile);
     }
   } catch(e) {
-    console.warn('Firestore profile read failed:', e.code, e.message);
+    console.warn('Profile read failed:', e.code, e.message);
     userProfile = { name: currentUser.email.split('@')[0], email: currentUser.email, role: 'admin' };
     if (e.code === 'permission-denied') logRulesFix();
   }
@@ -407,7 +563,7 @@ async function loadProfile() {
 
 async function loadCategories() {
   try {
-    const snap = await getDoc(doc(db, 'settings', 'categories'));
+    const snap = await getDoc(doc(db,'settings','categories'));
     categories = snap.exists() ? snap.data() : structuredClone(DEFAULT_CATS);
     if (!snap.exists()) await setDoc(doc(db,'settings','categories'), categories);
   } catch(e) {
@@ -422,7 +578,7 @@ async function saveCategories() {
 
 function logRulesFix() {
   console.error(`
-FIRESTORE RULES FIX — paste in Firebase Console > Firestore > Rules, then Publish:
+FIRESTORE RULES FIX — paste in Firebase Console > Firestore > Rules > Publish:
 
 rules_version = '2';
 service cloud.firestore {
@@ -435,7 +591,7 @@ service cloud.firestore {
   toast('⚠️ Firestore permission error — check browser console (F12) for fix.');
 }
 
-// ── LOGIN ───────────────────────────────────────────────────────────
+// ── LOGIN ────────────────────────────────────────────────────────────
 $('login-btn').addEventListener('click', doLogin);
 $('login-pass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
 
@@ -446,39 +602,30 @@ async function doLogin() {
   const dbgEl = $('debug-box');
   errEl.style.display = 'none';
   dbgEl.style.display = 'none';
-
-  if (!email || !pass) {
-    errEl.textContent = 'Please enter your email and password.';
-    errEl.style.display = 'block';
-    return;
-  }
-
+  if (!email || !pass) { errEl.textContent = 'Please enter your email and password.'; errEl.style.display = 'block'; return; }
   $('login-btn').disabled = true;
   $('login-btn').innerHTML = '<span class="spinner"></span> Signing in…';
-
   try {
     await signInWithEmailAndPassword(auth, email, pass);
-    // onAuthStateChanged takes over from here
   } catch(e) {
-    $('login-btn').disabled = false;
-    $('login-btn').textContent = 'Sign in';
+    resetLoginBtn();
     const msgs = {
-      'auth/invalid-credential':     'Invalid email or password.',
-      'auth/invalid-email':          'Invalid email address.',
-      'auth/user-not-found':         'No account with this email.',
-      'auth/wrong-password':         'Incorrect password.',
-      'auth/user-disabled':          'This account has been disabled.',
-      'auth/too-many-requests':      'Too many attempts — please wait a moment.',
-      'auth/network-request-failed': 'Network error — check your connection.',
+      'auth/invalid-credential':'Invalid email or password.',
+      'auth/invalid-email':'Invalid email address.',
+      'auth/user-not-found':'No account with this email.',
+      'auth/wrong-password':'Incorrect password.',
+      'auth/user-disabled':'This account has been disabled.',
+      'auth/too-many-requests':'Too many attempts — please wait.',
+      'auth/network-request-failed':'Network error — check your connection.',
     };
     errEl.textContent = msgs[e.code] || 'Sign-in failed.';
     errEl.style.display = 'block';
-    dbgEl.textContent = '🔍 Firebase error: ' + e.code + ' — ' + e.message;
+    dbgEl.textContent = '🔍 ' + e.code + ': ' + e.message;
     dbgEl.style.display = 'block';
   }
 }
 
-// ── LOGOUT ──────────────────────────────────────────────────────────
+// ── LOGOUT ───────────────────────────────────────────────────────────
 $('logout-btn').addEventListener('click', async () => {
   if (unsubTx) unsubTx();
   await signOut(auth);
@@ -493,8 +640,7 @@ function initApp() {
   document.querySelectorAll('.admin-only').forEach(el => {
     el.style.display = userProfile.role === 'admin' ? 'flex' : 'none';
   });
-  const now = currentYM();
-  $('filter-month').value = now;
+  $('filter-month').value = curYM();
   populateBudgetMonthSelect();
   subscribeTransactions();
   if (userProfile.role === 'admin') loadUsers();
@@ -503,19 +649,19 @@ function initApp() {
   showSection('dashboard');
 }
 
-// ── REALTIME TRANSACTIONS ────────────────────────────────────────────
+// ── REALTIME ─────────────────────────────────────────────────────────
 function subscribeTransactions() {
   if (unsubTx) unsubTx();
   const q = query(collection(db,'transactions'), orderBy('date','desc'));
   unsubTx = onSnapshot(q, snap => {
-    transactions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    transactions = snap.docs.map(d => ({id:d.id,...d.data()}));
     renderAll();
   }, err => {
-    console.error('Transactions snapshot error:', err.code, err.message);
+    console.error('Snapshot error:', err.code, err.message);
     if (err.code === 'permission-denied') logRulesFix();
   });
   getDocs(collection(db,'budgets'))
-    .then(snap => { budgets = snap.docs.map(d => ({id:d.id,...d.data()})); renderBudget(); })
+    .then(snap => { budgets = snap.docs.map(d=>({id:d.id,...d.data()})); renderBudget(); })
     .catch(err => console.warn('Budget fetch:', err.code));
 }
 
@@ -524,7 +670,7 @@ document.querySelectorAll('.nav-item[data-section]').forEach(el => {
   el.addEventListener('click', () => showSection(el.dataset.section));
 });
 
-const PAGE_TITLES = { dashboard:'Dashboard', transactions:'Transactions', budget:'Budget', admin:'Admin' };
+const PAGE_TITLES = {dashboard:'Dashboard',transactions:'Transactions',budget:'Budget',payments:'Payments Due',admin:'Admin'};
 
 function showSection(name) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -533,8 +679,16 @@ function showSection(name) {
   document.querySelector(`.nav-item[data-section="${name}"]`)?.classList.add('active');
   $('page-title').textContent = PAGE_TITLES[name] || name;
   if (name === 'transactions') { populateFilterCats(); renderTransactions(); }
-  if (name === 'budget') renderBudget();
-  if (name === 'admin') { loadUsers(); renderAdminCategories(); }
+  if (name === 'budget')       renderBudget();
+  if (name === 'admin')        { loadUsers(); renderAdminCategories(); }
+  if (name === 'payments') {
+    loadPayments().then(() => {
+      populatePayMonthSelect();
+      payViewMonth = $('pay-month-sel').value;
+      renderPayMonthly();
+      if (currentPayTab === 'setup') renderPaySetup();
+    });
+  }
 }
 
 // ── PERIOD TABS ───────────────────────────────────────────────────────
@@ -547,7 +701,6 @@ document.querySelectorAll('.period-tab').forEach(el => {
   });
 });
 
-// ── RENDER ALL ────────────────────────────────────────────────────────
 function renderAll() { renderDashboard(); renderTransactions(); renderBudget(); }
 
 function filterByPeriod(txs, period) {
@@ -573,12 +726,12 @@ function renderDashboard() {
   const net = totalInc - totalExp;
   $('sum-income').textContent  = fmt(totalInc);
   $('sum-expense').textContent = fmt(totalExp);
-  $('sum-net').textContent     = (net < 0 ? '-' : '') + fmt(net);
-  $('sum-net').style.color     = net >= 0 ? 'var(--accent)' : 'var(--red)';
+  $('sum-net').textContent     = (net<0?'-':'')+fmt(net);
+  $('sum-net').style.color     = net>=0 ? 'var(--accent)' : 'var(--red)';
   $('sum-income-ct').textContent  = `${inc.length} transaction${inc.length!==1?'s':''}`;
   $('sum-expense-ct').textContent = `${exp.length} transaction${exp.length!==1?'s':''}`;
   $('sum-period-lbl').textContent = {week:'This week',month:'This month',year:'This year'}[currentPeriod];
-  $('dash-tbody').innerHTML = filtered.slice(0,10).map(t => `
+  $('dash-tbody').innerHTML = filtered.slice(0,10).map(t=>`
     <tr>
       <td>${t.date}</td>
       <td><span class="badge badge-${t.type}">${t.type}</span></td>
@@ -588,14 +741,12 @@ function renderDashboard() {
     </tr>`).join('') || '<tr><td colspan="5" class="empty">No transactions this period</td></tr>';
 }
 
-// ── TRANSACTIONS ──────────────────────────────────────────────────────
+// ── TRANSACTIONS TABLE ────────────────────────────────────────────────
 function populateFilterCats() {
   const sel = $('filter-cat');
   const cur = sel.value;
   sel.innerHTML = '<option value="">All categories</option>';
-  [...categories.income, ...categories.expense].sort().forEach(c => {
-    sel.innerHTML += `<option value="${c}">${c}</option>`;
-  });
+  [...categories.income,...categories.expense].sort().forEach(c => sel.innerHTML += `<option value="${c}">${c}</option>`);
   sel.value = cur;
 }
 
@@ -604,11 +755,12 @@ function renderTransactions() {
   const catF   = $('filter-cat').value;
   const monthF = $('filter-month').value;
   let txs = transactions.slice();
-  if (typeF)  txs = txs.filter(t => t.type === typeF);
-  if (catF)   txs = txs.filter(t => t.category === catF);
-  if (monthF) txs = txs.filter(t => t.date.startsWith(monthF));
-  $('tx-tbody').innerHTML = txs.map(t => `
-    <tr>
+  if (typeF)  txs = txs.filter(t=>t.type===typeF);
+  if (catF)   txs = txs.filter(t=>t.category===catF);
+  if (monthF) txs = txs.filter(t=>t.date.startsWith(monthF));
+
+  const rows = txs.map(t=>`
+    <tr data-id="${t.id}">
       <td>${t.date}</td>
       <td><span class="badge badge-${t.type}">${t.type}</span></td>
       <td>${t.category}</td>
@@ -619,22 +771,101 @@ function renderTransactions() {
         <button class="icon-btn del" data-action="del-tx" data-id="${t.id}">🗑️</button>
       </div></td>
     </tr>`).join('') || '<tr><td colspan="6" class="empty">No transactions found</td></tr>';
+
+  // Preserve the inline new row if it's active
+  const inlineRow = inlineRowActive ? buildInlineRow() : '';
+  $('tx-tbody').innerHTML = inlineRow + rows;
+  if (inlineRowActive) attachInlineRowListeners();
 }
 
 $('filter-type').addEventListener('change', renderTransactions);
 $('filter-cat').addEventListener('change', renderTransactions);
 $('filter-month').addEventListener('change', renderTransactions);
 
-// event delegation for tx table actions
+// Delegation for edit/delete buttons
 $('tx-tbody').addEventListener('click', e => {
   const btn = e.target.closest('[data-action]');
   if (!btn) return;
-  const { action, id } = btn.dataset;
+  const {action, id} = btn.dataset;
   if (action === 'edit-tx') openEditTx(id);
   if (action === 'del-tx')  deleteTx(id);
+  if (action === 'inline-income')  setInlineType('income');
+  if (action === 'inline-expense') setInlineType('expense');
+  if (action === 'save-inline')    saveInlineRow();
+  if (action === 'cancel-inline')  cancelInlineRow();
 });
 
-// ── TRANSACTION MODAL ─────────────────────────────────────────────────
+// ── INLINE NEW ROW ────────────────────────────────────────────────────
+$('add-inline-btn').addEventListener('click', () => {
+  if (inlineRowActive) { toast('Finish or cancel the current new row first.'); return; }
+  inlineRowActive = true;
+  inlineRowType = 'income';
+  renderTransactions();
+  // Focus the date field
+  setTimeout(() => { const d = document.querySelector('#inline-date'); if(d) d.focus(); }, 50);
+});
+
+function buildInlineRow() {
+  return `<tr class="inline-row" id="inline-new-row">
+    <td><input type="date" id="inline-date" value="${today()}" style="min-width:120px"/></td>
+    <td>
+      <div class="inline-type-sel">
+        <button data-action="inline-income"  class="${inlineRowType==='income'?'active-income':''}">Income</button>
+        <button data-action="inline-expense" class="${inlineRowType==='expense'?'active-expense':''}">Expense</button>
+      </div>
+    </td>
+    <td><select id="inline-cat">${catOpts(inlineRowType)}</select></td>
+    <td><input type="text" id="inline-desc" placeholder="Description…"/></td>
+    <td><input type="number" id="inline-amount" placeholder="0.00" min="0" step="0.01" style="min-width:90px"/></td>
+    <td><div class="action-btns">
+      <button class="icon-btn save-row" data-action="save-inline">✓ Save</button>
+      <button class="icon-btn del" data-action="cancel-inline">✕</button>
+    </div></td>
+  </tr>`;
+}
+
+function attachInlineRowListeners() {
+  // Enter key on amount saves
+  const amtEl = $('inline-amount');
+  if (amtEl) amtEl.addEventListener('keydown', e => { if(e.key==='Enter') saveInlineRow(); });
+  const descEl = $('inline-desc');
+  if (descEl) descEl.addEventListener('keydown', e => { if(e.key==='Enter') saveInlineRow(); });
+}
+
+function setInlineType(type) {
+  inlineRowType = type;
+  // Rebuild just the category options and button styles
+  const catSel = $('inline-cat');
+  if (catSel) catSel.innerHTML = catOpts(type);
+  const row = $('inline-new-row');
+  if (!row) return;
+  row.querySelectorAll('.inline-type-sel button').forEach(btn => {
+    btn.className = btn.dataset.action === `inline-${type}` ? `active-${type}` : '';
+  });
+}
+
+async function saveInlineRow() {
+  const date   = $('inline-date')?.value;
+  const amount = parseFloat($('inline-amount')?.value);
+  const cat    = $('inline-cat')?.value;
+  const desc   = $('inline-desc')?.value.trim() || '';
+  if (!date || isNaN(amount) || amount <= 0 || !cat) { toast('Please fill date, category, and a valid amount.'); return; }
+  try {
+    await addDoc(collection(db,'transactions'), {
+      type: inlineRowType, date, amount, category: cat, description: desc,
+      createdAt: serverTimestamp(), createdBy: currentUser.uid, updatedAt: serverTimestamp()
+    });
+    inlineRowActive = false;
+    toast('Transaction added.');
+  } catch(e) { toast('Error: ' + e.message); }
+}
+
+function cancelInlineRow() {
+  inlineRowActive = false;
+  renderTransactions();
+}
+
+// ── TRANSACTION MODAL (edit + topbar add) ────────────────────────────
 $('add-tx-btn').addEventListener('click', openAddTx);
 $('tx-cancel-btn').addEventListener('click', () => $('tx-modal').classList.remove('open'));
 $('tx-save-btn').addEventListener('click', saveTx);
@@ -652,13 +883,13 @@ function openAddTx() {
 }
 
 function openEditTx(id) {
-  const t = transactions.find(x => x.id === id);
+  const t = transactions.find(x=>x.id===id);
   if (!t) return;
   editingTxId = id;
   $('tx-modal-title').textContent = 'Edit Transaction';
   $('tx-date').value   = t.date;
   $('tx-amount').value = t.amount;
-  $('tx-desc').value   = t.description || '';
+  $('tx-desc').value   = t.description||'';
   setTxType(t.type);
   $('tx-category').value = t.category;
   $('tx-modal').classList.add('open');
@@ -666,16 +897,12 @@ function openEditTx(id) {
 
 function setTxType(type) {
   currentTxType = type;
-  $('type-income-btn').className  = type === 'income'  ? 'active-income'  : '';
-  $('type-expense-btn').className = type === 'expense' ? 'active-expense' : '';
-  fillTxCategorySelect(type);
-}
-
-function fillTxCategorySelect(type) {
+  $('type-income-btn').className  = type==='income'  ? 'active-income'  : '';
+  $('type-expense-btn').className = type==='expense' ? 'active-expense' : '';
   const sel = $('tx-category');
   const cur = sel.value;
-  sel.innerHTML = (categories[type] || []).map(c => `<option value="${c}">${c}</option>`).join('');
-  if ((categories[type] || []).includes(cur)) sel.value = cur;
+  sel.innerHTML = catOpts(type);
+  if ((categories[type]||[]).includes(cur)) sel.value = cur;
 }
 
 async function saveTx() {
@@ -683,28 +910,25 @@ async function saveTx() {
   const amount = parseFloat($('tx-amount').value);
   const cat    = $('tx-category').value;
   const desc   = $('tx-desc').value.trim();
-  if (!date || isNaN(amount) || amount <= 0 || !cat) { toast('Please fill all required fields.'); return; }
-  const data = { type: currentTxType, date, amount, category: cat, description: desc, updatedAt: serverTimestamp(), updatedBy: currentUser.uid };
+  if (!date || isNaN(amount) || amount<=0 || !cat) { toast('Please fill all required fields.'); return; }
+  const data = { type:currentTxType, date, amount, category:cat, description:desc, updatedAt:serverTimestamp(), updatedBy:currentUser.uid };
   try {
     if (editingTxId) {
       await updateDoc(doc(db,'transactions',editingTxId), data);
       toast('Transaction updated.');
     } else {
-      data.createdAt = serverTimestamp();
-      data.createdBy = currentUser.uid;
+      data.createdAt = serverTimestamp(); data.createdBy = currentUser.uid;
       await addDoc(collection(db,'transactions'), data);
       toast('Transaction added.');
     }
     $('tx-modal').classList.remove('open');
-  } catch(e) { toast('Error: ' + e.message); }
+  } catch(e) { toast('Error: '+e.message); }
 }
 
 async function deleteTx(id) {
   if (!confirm('Delete this transaction?')) return;
-  try {
-    await deleteDoc(doc(db,'transactions',id));
-    toast('Transaction deleted.');
-  } catch(e) { toast('Error: ' + e.message); }
+  try { await deleteDoc(doc(db,'transactions',id)); toast('Transaction deleted.'); }
+  catch(e) { toast('Error: '+e.message); }
 }
 
 // ── BUDGET ────────────────────────────────────────────────────────────
@@ -712,7 +936,7 @@ function populateBudgetMonthSelect() {
   const sel = $('budget-month-sel');
   const now = new Date();
   sel.innerHTML = '';
-  for (let i = -2; i <= 6; i++) {
+  for (let i=-2;i<=6;i++) {
     const d = new Date(now.getFullYear(), now.getMonth()+i, 1);
     const val = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
     sel.innerHTML += `<option value="${val}" ${i===0?'selected':''}>${d.toLocaleString('default',{month:'long',year:'numeric'})}</option>`;
@@ -722,16 +946,16 @@ function populateBudgetMonthSelect() {
 function renderBudget() {
   const month = $('budget-month-sel')?.value;
   if (!month) return;
-  const mb  = budgets.filter(b => b.month === month);
-  const mtx = transactions.filter(t => t.date.startsWith(month));
+  const mb  = budgets.filter(b=>b.month===month);
+  const mtx = transactions.filter(t=>t.date.startsWith(month));
   if (!mb.length) {
     $('budget-grid').innerHTML = '<div class="empty">No budgets set for this month. Click "Set budget" to add one.</div>';
     return;
   }
   $('budget-grid').innerHTML = mb.map(b => {
     const actual = mtx.filter(t=>t.category===b.category&&t.type==='expense').reduce((s,t)=>s+Number(t.amount),0);
-    const pct    = b.amount > 0 ? Math.min((actual/b.amount)*100, 100) : 0;
-    const color  = pct < 70 ? 'var(--green)' : pct < 90 ? 'var(--amber)' : 'var(--red)';
+    const pct    = b.amount>0 ? Math.min((actual/b.amount)*100,100) : 0;
+    const color  = pct<70?'var(--green)':pct<90?'var(--amber)':'var(--red)';
     return `<div class="budget-row">
       <div class="br-top"><span class="cat-name">${b.category}</span><span class="amounts">${fmt(actual)} / ${fmt(b.amount)}</span></div>
       <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${color}"></div></div>
@@ -746,8 +970,8 @@ $('bm-cancel-btn').addEventListener('click', () => $('budget-modal').classList.r
 $('bm-save-btn').addEventListener('click', saveBudget);
 
 function openBudgetModal() {
-  $('bm-month').value = $('budget-month-sel').value || currentYM();
-  $('bm-category').innerHTML = (categories.expense || []).map(c => `<option value="${c}">${c}</option>`).join('');
+  $('bm-month').value = $('budget-month-sel').value || curYM();
+  $('bm-category').innerHTML = catOpts('expense');
   $('bm-amount').value = '';
   $('budget-modal').classList.add('open');
 }
@@ -756,18 +980,17 @@ async function saveBudget() {
   const month = $('bm-month').value;
   const cat   = $('bm-category').value;
   const amt   = parseFloat($('bm-amount').value);
-  if (!month || !cat || isNaN(amt) || amt <= 0) { toast('Please fill all fields.'); return; }
-  const existing = budgets.find(b => b.month===month && b.category===cat);
-  const data = { month, category: cat, amount: amt };
+  if (!month||!cat||isNaN(amt)||amt<=0) { toast('Please fill all fields.'); return; }
+  const existing = budgets.find(b=>b.month===month&&b.category===cat);
   try {
-    if (existing) await updateDoc(doc(db,'budgets',existing.id), data);
-    else          await addDoc(collection(db,'budgets'), data);
+    if (existing) await updateDoc(doc(db,'budgets',existing.id), {month,category:cat,amount:amt});
+    else          await addDoc(collection(db,'budgets'), {month,category:cat,amount:amt});
     const snap = await getDocs(collection(db,'budgets'));
-    budgets = snap.docs.map(d => ({id:d.id,...d.data()}));
+    budgets = snap.docs.map(d=>({id:d.id,...d.data()}));
     $('budget-modal').classList.remove('open');
     renderBudget();
     toast('Budget saved.');
-  } catch(e) { toast('Error: ' + e.message); }
+  } catch(e) { toast('Error: '+e.message); }
 }
 
 // ── ADMIN USERS ───────────────────────────────────────────────────────
@@ -776,15 +999,15 @@ let allUsers = [];
 async function loadUsers() {
   try {
     const snap = await getDocs(collection(db,'users'));
-    allUsers = snap.docs.map(d => ({id:d.id,...d.data()}));
+    allUsers = snap.docs.map(d=>({id:d.id,...d.data()}));
     renderUsers();
-  } catch(e) { console.warn('Load users failed:', e.code); }
+  } catch(e) { console.warn('Load users:', e.code); }
 }
 
 function renderUsers() {
   const el = $('user-list');
   if (!allUsers.length) { el.innerHTML = '<div class="empty">No users yet.</div>'; return; }
-  el.innerHTML = allUsers.map(u => `
+  el.innerHTML = allUsers.map(u=>`
     <div class="user-row">
       <div>
         <div style="font-weight:500">${u.name||u.email}</div>
@@ -792,18 +1015,17 @@ function renderUsers() {
       </div>
       <div style="display:flex;gap:8px">
         <button class="btn btn-secondary btn-sm" data-action="edit-user" data-id="${u.id}">Edit</button>
-        ${u.id !== currentUser.uid ? `<button class="btn-remove" data-action="del-user" data-id="${u.id}">Remove</button>` : ''}
+        ${u.id!==currentUser.uid?`<button class="btn-remove" data-action="del-user" data-id="${u.id}">Remove</button>`:''}
       </div>
     </div>`).join('');
 }
 
-// event delegation for user list
 $('user-list').addEventListener('click', e => {
   const btn = e.target.closest('[data-action]');
   if (!btn) return;
-  const { action, id } = btn.dataset;
-  if (action === 'edit-user') openEditUser(id);
-  if (action === 'del-user')  deleteUser(id);
+  const {action,id} = btn.dataset;
+  if (action==='edit-user') openEditUser(id);
+  if (action==='del-user')  deleteUser(id);
 });
 
 $('add-user-btn').addEventListener('click', openAddUser);
@@ -816,19 +1038,23 @@ function openAddUser() {
   $('um-name').value = $('um-email').value = $('um-pass').value = '';
   $('um-role').value = 'user';
   $('um-pass-hint').style.display = 'none';
+  $('um-email').disabled = false;
+  $('user-err').style.display = 'none';
   $('user-modal').classList.add('open');
 }
 
 function openEditUser(id) {
-  const u = allUsers.find(x => x.id === id);
+  const u = allUsers.find(x=>x.id===id);
   if (!u) return;
   editingUserId = id;
   $('user-modal-title').textContent = 'Edit User';
-  $('um-name').value  = u.name  || '';
-  $('um-email').value = u.email || '';
+  $('um-name').value  = u.name||'';
+  $('um-email').value = u.email||'';
   $('um-pass').value  = '';
-  $('um-role').value  = u.role  || 'user';
+  $('um-role').value  = u.role||'user';
   $('um-pass-hint').style.display = '';
+  $('um-email').disabled = true; // can't change email via Firestore only
+  $('user-err').style.display = 'none';
   $('user-modal').classList.add('open');
 }
 
@@ -837,29 +1063,54 @@ async function saveUser() {
   const email = $('um-email').value.trim();
   const pass  = $('um-pass').value;
   const role  = $('um-role').value;
+  const errEl = $('user-err');
+  errEl.style.display = 'none';
+
   if (!name || !email) { toast('Name and email are required.'); return; }
+
+  const saveBtn = $('um-save-btn');
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Saving…';
+
   try {
     if (editingUserId) {
+      // ── EDIT: update Firestore profile only ──
       await updateDoc(doc(db,'users',editingUserId), { name, role });
       toast('User updated.');
+      $('user-modal').classList.remove('open');
+      await loadUsers();
     } else {
+      // ── CREATE: use secondary auth app so admin session is not disturbed ──
       if (!pass || pass.length < 6) { toast('Password must be at least 6 characters.'); return; }
-      const cred = await createUserWithEmailAndPassword(auth, email, pass);
+      const cred = await createUserWithEmailAndPassword(authSecondary, email, pass);
+      // Write Firestore profile under the new user's uid
       await setDoc(doc(db,'users',cred.user.uid), { name, email, role });
-      toast('User created.');
+      // Sign the new user out of the secondary app immediately
+      await signOut(authSecondary);
+      toast(`User "${name}" created successfully.`);
+      $('user-modal').classList.remove('open');
+      await loadUsers();
     }
-    $('user-modal').classList.remove('open');
-    await loadUsers();
-  } catch(e) { toast('Error: ' + e.message); }
+  } catch(e) {
+    const msgs = {
+      'auth/email-already-in-use': 'This email is already registered.',
+      'auth/invalid-email':        'Invalid email address.',
+      'auth/weak-password':        'Password is too weak (min 6 chars).',
+    };
+    const msg = msgs[e.code] || e.message;
+    errEl.textContent = '⚠️ ' + msg;
+    errEl.style.display = 'block';
+    toast('Error: ' + msg);
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save';
+  }
 }
 
 async function deleteUser(id) {
   if (!confirm('Remove this user from the app? (Their Firebase Auth account is kept.)')) return;
-  try {
-    await deleteDoc(doc(db,'users',id));
-    toast('User removed.');
-    await loadUsers();
-  } catch(e) { toast('Error: ' + e.message); }
+  try { await deleteDoc(doc(db,'users',id)); toast('User removed.'); await loadUsers(); }
+  catch(e) { toast('Error: '+e.message); }
 }
 
 // ── CATEGORIES ────────────────────────────────────────────────────────
@@ -868,20 +1119,19 @@ $('add-expense-cat-btn').addEventListener('click', () => openCatModal('expense')
 $('cat-cancel-btn').addEventListener('click', () => $('cat-modal').classList.remove('open'));
 $('cat-save-btn').addEventListener('click', saveCat);
 
-// event delegation for category chips
 ['cat-income-list','cat-expense-list'].forEach(listId => {
   $(listId).addEventListener('click', e => {
     const btn = e.target.closest('[data-action]');
     if (!btn) return;
-    const { action, type, cat } = btn.dataset;
-    if (action === 'edit-cat') openEditCat(type, cat);
-    if (action === 'del-cat')  deleteCat(type, cat);
+    const {action,type,cat} = btn.dataset;
+    if (action==='edit-cat') openEditCat(type, cat);
+    if (action==='del-cat')  deleteCat(type, cat);
   });
 });
 
 function renderAdminCategories() {
   ['income','expense'].forEach(type => {
-    $(('cat-'+type+'-list')).innerHTML = (categories[type]||[]).map(c => `
+    $(`cat-${type}-list`).innerHTML = (categories[type]||[]).map(c=>`
       <div class="cat-chip chip-${type}">
         ${c}
         <button class="edit-cat" data-action="edit-cat" data-type="${type}" data-cat="${c}" title="Rename">✏️</button>
@@ -892,23 +1142,25 @@ function renderAdminCategories() {
 }
 
 function fillCategoryDropdowns() {
-  fillTxCategorySelect(currentTxType || 'income');
+  // Modal category select
+  const cur = $('tx-category').value;
+  $('tx-category').innerHTML = catOpts(currentTxType||'income');
+  if ((categories[currentTxType||'income']||[]).includes(cur)) $('tx-category').value = cur;
+  // Budget category select
   const bm = $('bm-category');
-  if (bm) bm.innerHTML = (categories.expense||[]).map(c=>`<option value="${c}">${c}</option>`).join('');
+  if (bm) bm.innerHTML = catOpts('expense');
   populateFilterCats();
 }
 
 function openCatModal(type) {
-  editingCatType = type;
-  editingCatOld  = null;
-  $('cat-modal-title').textContent = 'Add ' + (type==='income'?'Income':'Expense') + ' Category';
+  editingCatType = type; editingCatOld = null;
+  $('cat-modal-title').textContent = 'Add '+(type==='income'?'Income':'Expense')+' Category';
   $('cat-name-input').value = '';
   $('cat-modal').classList.add('open');
 }
 
 function openEditCat(type, name) {
-  editingCatType = type;
-  editingCatOld  = name;
+  editingCatType = type; editingCatOld = name;
   $('cat-modal-title').textContent = 'Rename Category';
   $('cat-name-input').value = name;
   $('cat-modal').classList.add('open');
@@ -929,23 +1181,310 @@ async function saveCat() {
     renderAdminCategories();
     $('cat-modal').classList.remove('open');
     toast('Category saved.');
-  } catch(e) { toast('Error: ' + e.message); }
+  } catch(e) { toast('Error: '+e.message); }
 }
 
 async function deleteCat(type, name) {
-  const inUse = transactions.some(t => t.category === name);
+  const inUse = transactions.some(t=>t.category===name);
   if (inUse && !confirm(`"${name}" is used in existing transactions. Delete anyway?`)) return;
-  categories[type] = categories[type].filter(c => c !== name);
-  try {
-    await saveCategories();
-    renderAdminCategories();
-    toast('Category deleted.');
-  } catch(e) { toast('Error: ' + e.message); }
+  categories[type] = categories[type].filter(c=>c!==name);
+  try { await saveCategories(); renderAdminCategories(); toast('Category deleted.'); }
+  catch(e) { toast('Error: '+e.message); }
 }
 
-// ── ENTER KEY IN MODALS ───────────────────────────────────────────────
+// ── ENTER KEYS ───────────────────────────────────────────────────────
 $('cat-name-input').addEventListener('keydown', e => { if(e.key==='Enter') saveCat(); });
 $('bm-amount').addEventListener('keydown',      e => { if(e.key==='Enter') saveBudget(); });
+$('um-name').addEventListener('keydown',        e => { if(e.key==='Enter') saveUser(); });
+
+// ════════════════════════════════════════════════════════════════════
+// ── PAYMENTS DUE ─────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════
+
+let payTemplates   = [];   // collection: payment_templates
+let payRecords     = [];   // collection: payment_records
+let currentPayTab  = 'monthly';
+let editingPayId   = null;
+let payViewMonth   = curYM();
+
+// ── Load payment data ─────────────────────────────────────────────────
+async function loadPayments() {
+  try {
+    const [tSnap, rSnap] = await Promise.all([
+      getDocs(collection(db,'payment_templates')),
+      getDocs(collection(db,'payment_records'))
+    ]);
+    payTemplates = tSnap.docs.map(d=>({id:d.id,...d.data()}));
+    payRecords   = rSnap.docs.map(d=>({id:d.id,...d.data()}));
+  } catch(e) {
+    console.warn('Payments load error:', e.code, e.message);
+  }
+}
+
+// ── Month select for payments ─────────────────────────────────────────
+function populatePayMonthSelect() {
+  const sel = $('pay-month-sel');
+  const now = new Date();
+  sel.innerHTML = '';
+  for (let i = -2; i <= 4; i++) {
+    const d   = new Date(now.getFullYear(), now.getMonth()+i, 1);
+    const val = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    sel.innerHTML += `<option value="${val}" ${i===0?'selected':''}>${d.toLocaleString('default',{month:'long',year:'numeric'})}</option>`;
+  }
+  payViewMonth = sel.value;
+}
+
+$('pay-month-sel').addEventListener('change', () => {
+  payViewMonth = $('pay-month-sel').value;
+  renderPayMonthly();
+});
+
+// ── Payment tab switching ─────────────────────────────────────────────
+document.querySelectorAll('.pay-tab').forEach(el => {
+  el.addEventListener('click', () => {
+    currentPayTab = el.dataset.ptab;
+    document.querySelectorAll('.pay-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    $('pay-monthly-view').style.display = currentPayTab==='monthly' ? '' : 'none';
+    $('pay-setup-view').style.display   = currentPayTab==='setup'   ? '' : 'none';
+    if (currentPayTab==='setup') renderPaySetup();
+    else renderPayMonthly();
+  });
+});
+
+// ── Status logic ──────────────────────────────────────────────────────
+function getPayStatus(template, month) {
+  if (!template.active) return 'inactive';
+  const rec = payRecords.find(r => r.templateId===template.id && r.month===month);
+  if (rec?.paid) return 'paid';
+  // Check due date vs today (only meaningful for current month)
+  const [y, m] = month.split('-').map(Number);
+  const dueDate = new Date(y, m-1, Math.min(template.dueDay, new Date(y,m,0).getDate()));
+  const today2  = new Date(); today2.setHours(0,0,0,0);
+  const diff    = Math.floor((dueDate - today2) / 86400000);
+  const isCurMonth = month === curYM();
+  if (isCurMonth) {
+    if (diff < 0)  return 'overdue';
+    if (diff <= 2) return 'soon';
+  }
+  return 'upcoming';
+}
+
+const STATUS_ICON  = {paid:'✅',overdue:'🔴',soon:'🟡',upcoming:'🔵',inactive:'⚫'};
+const STATUS_LABEL = {paid:'Paid',overdue:'Overdue',soon:'Due soon',upcoming:'Upcoming',inactive:'Inactive'};
+const STATUS_PSB   = {paid:'psb-paid',overdue:'psb-overdue',soon:'psb-soon',upcoming:'psb-upcoming',inactive:'psb-inactive'};
+
+function dueDateLabel(template, month) {
+  const [y, m] = month.split('-').map(Number);
+  const day = Math.min(template.dueDay, new Date(y,m,0).getDate());
+  const d   = new Date(y, m-1, day);
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+
+// ── Render monthly view ───────────────────────────────────────────────
+function renderPayMonthly() {
+  const month     = payViewMonth;
+  const active    = payTemplates.filter(t => t.active !== false);
+  const withStatus = active.map(t => ({...t, _status: getPayStatus(t, month)}));
+
+  // Sort: overdue → soon → upcoming → paid
+  const order = {overdue:0,soon:1,upcoming:2,paid:3,inactive:4};
+  withStatus.sort((a,b) => order[a._status] - order[b._status]);
+
+  // Summary cards
+  const paid     = withStatus.filter(t=>t._status==='paid').length;
+  const overdue  = withStatus.filter(t=>t._status==='overdue').length;
+  const soon     = withStatus.filter(t=>t._status==='soon').length;
+  const totalAmt = active.reduce((s,t)=>s+Number(t.amount||0), 0);
+  const paidAmt  = withStatus.filter(t=>t._status==='paid').reduce((s,t)=>s+Number(t.amount||0),0);
+
+  $('pay-summary-cards').innerHTML = `
+    <div class="pay-card c-total"><div class="label">Total Due</div><div class="val">${fmt(totalAmt)}</div><div style="font-size:11px;color:var(--ink-3);margin-top:4px">${active.length} payments</div></div>
+    <div class="pay-card c-paid"><div class="label">Paid</div><div class="val">${fmt(paidAmt)}</div><div style="font-size:11px;color:var(--ink-3);margin-top:4px">${paid} of ${active.length}</div></div>
+    <div class="pay-card c-soon"><div class="label">Due Soon</div><div class="val" style="color:var(--amber)">${soon}</div><div style="font-size:11px;color:var(--ink-3);margin-top:4px">within 2 days</div></div>
+    <div class="pay-card c-overdue"><div class="label">Overdue</div><div class="val">${overdue}</div><div style="font-size:11px;color:var(--ink-3);margin-top:4px">past due date</div></div>`;
+
+  // Note for non-current months
+  const isCur = month === curYM();
+  $('pay-month-note').textContent = isCur ? '' : 'Viewing a past/future month — overdue/soon status reflects that month\'s due dates.';
+
+  if (!withStatus.length) {
+    $('pay-grid').innerHTML = `<div class="empty">No payments set up yet. Go to Setup tab to add them.</div>`;
+    return;
+  }
+
+  $('pay-grid').innerHTML = withStatus.map(t => {
+    const rec      = payRecords.find(r=>r.templateId===t.id && r.month===month);
+    const isPaid   = t._status==='paid';
+    const paidInfo = isPaid && rec?.paidDate ? `Paid on ${rec.paidDate}` : '';
+    const actionBtns = isPaid
+      ? `<button class="btn-mark-unpaid" data-action="mark-unpaid" data-id="${t.id}">↩ Mark unpaid</button>`
+      : `<button class="btn-mark-paid" data-action="mark-paid" data-id="${t.id}">✓ Mark paid</button>`;
+    return `
+      <div class="pay-item status-${t._status}">
+        <div class="pay-icon status-${t._status}">${STATUS_ICON[t._status]}</div>
+        <div class="pay-meta">
+          <div class="pay-payee">${t.payee}</div>
+          <div class="pay-detail">Due ${dueDateLabel(t,month)} · ${t.category||'—'}${t.description?' · '+t.description:''}</div>
+          ${paidInfo ? `<div style="font-size:11px;color:var(--green);margin-top:2px">✓ ${paidInfo}</div>` : ''}
+        </div>
+        <div class="pay-right">
+          <div class="pay-amount">${fmt(t.amount)}</div>
+          <span class="pay-status-badge ${STATUS_PSB[t._status]}">${STATUS_LABEL[t._status]}</span>
+          <div class="pay-actions">${actionBtns}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── Mark paid / unpaid (event delegation on pay-grid) ────────────────
+$('pay-grid').addEventListener('click', async e => {
+  const btn = e.target.closest('[data-action]');
+  if (!btn) return;
+  const {action, id} = btn.dataset;
+  if (action==='mark-paid')   await markPayment(id, true);
+  if (action==='mark-unpaid') await markPayment(id, false);
+});
+
+async function markPayment(templateId, paid) {
+  const month  = payViewMonth;
+  const recIdx = payRecords.findIndex(r=>r.templateId===templateId && r.month===month);
+  try {
+    if (paid) {
+      const data = { templateId, month, paid:true, paidDate: today(), paidBy: currentUser.uid };
+      if (recIdx > -1) {
+        await updateDoc(doc(db,'payment_records',payRecords[recIdx].id), data);
+        payRecords[recIdx] = {...payRecords[recIdx],...data};
+      } else {
+        const ref = await addDoc(collection(db,'payment_records'), data);
+        payRecords.push({id:ref.id,...data});
+      }
+      toast('Marked as paid ✓');
+    } else {
+      if (recIdx > -1) {
+        await deleteDoc(doc(db,'payment_records',payRecords[recIdx].id));
+        payRecords.splice(recIdx, 1);
+      }
+      toast('Marked as unpaid.');
+    }
+    renderPayMonthly();
+  } catch(e) { toast('Error: '+e.message); }
+}
+
+// ── Render setup table ────────────────────────────────────────────────
+function renderPaySetup() {
+  const tbody = $('pay-setup-tbody');
+  if (!payTemplates.length) {
+    tbody.innerHTML = '<tr><td colspan="7" class="empty">No payments added yet.</td></tr>';
+    return;
+  }
+  const sorted = [...payTemplates].sort((a,b)=>a.dueDay-b.dueDay);
+  tbody.innerHTML = sorted.map(t => {
+    const isActive = t.active !== false;
+    return `<tr>
+      <td><strong>${t.payee}</strong></td>
+      <td>${fmt(t.amount)}</td>
+      <td>Day ${t.dueDay}</td>
+      <td>${t.category||'—'}</td>
+      <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.description||'—'}</td>
+      <td><button class="toggle-active ${isActive?'on':'off'}" data-action="toggle-active" data-id="${t.id}">${isActive?'Active':'Inactive'}</button></td>
+      <td><div class="action-btns">
+        <button class="icon-btn" data-action="edit-pay" data-id="${t.id}">✏️</button>
+        <button class="icon-btn del" data-action="del-pay" data-id="${t.id}">🗑️</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+// Event delegation on setup table
+$('pay-setup-tbody').addEventListener('click', async e => {
+  const btn = e.target.closest('[data-action]');
+  if (!btn) return;
+  const {action, id} = btn.dataset;
+  if (action==='edit-pay')      openEditPay(id);
+  if (action==='del-pay')       deletePay(id);
+  if (action==='toggle-active') togglePayActive(id);
+});
+
+// ── Payment template modal ────────────────────────────────────────────
+$('add-payment-btn').addEventListener('click', openAddPay);
+$('pm-cancel-btn').addEventListener('click', () => $('pay-modal').classList.remove('open'));
+$('pm-save-btn').addEventListener('click', savePay);
+
+function openAddPay() {
+  editingPayId = null;
+  $('pay-modal-title').textContent = 'Add Recurring Payment';
+  $('pm-payee').value = $('pm-desc').value = '';
+  $('pm-amount').value = $('pm-dueday').value = '';
+  $('pm-category').innerHTML = catOpts('expense');
+  $('pay-modal').classList.add('open');
+}
+
+function openEditPay(id) {
+  const t = payTemplates.find(x=>x.id===id);
+  if (!t) return;
+  editingPayId = id;
+  $('pay-modal-title').textContent = 'Edit Payment';
+  $('pm-payee').value    = t.payee    || '';
+  $('pm-amount').value   = t.amount   || '';
+  $('pm-dueday').value   = t.dueDay   || '';
+  $('pm-desc').value     = t.description || '';
+  $('pm-category').innerHTML = catOpts('expense');
+  $('pm-category').value = t.category || '';
+  $('pay-modal').classList.add('open');
+}
+
+async function savePay() {
+  const payee  = $('pm-payee').value.trim();
+  const amount = parseFloat($('pm-amount').value);
+  const dueDay = parseInt($('pm-dueday').value);
+  const cat    = $('pm-category').value;
+  const desc   = $('pm-desc').value.trim();
+  if (!payee || isNaN(amount) || amount<=0 || isNaN(dueDay) || dueDay<1 || dueDay>31) {
+    toast('Please fill payee, amount, and a valid due day (1–31).'); return;
+  }
+  const data = { payee, amount, dueDay, category:cat, description:desc, active:true };
+  try {
+    if (editingPayId) {
+      await updateDoc(doc(db,'payment_templates',editingPayId), data);
+      const idx = payTemplates.findIndex(x=>x.id===editingPayId);
+      if (idx>-1) payTemplates[idx] = {...payTemplates[idx],...data};
+      toast('Payment updated.');
+    } else {
+      const ref = await addDoc(collection(db,'payment_templates'), data);
+      payTemplates.push({id:ref.id,...data});
+      toast('Payment added.');
+    }
+    $('pay-modal').classList.remove('open');
+    renderPaySetup();
+    renderPayMonthly();
+  } catch(e) { toast('Error: '+e.message); }
+}
+
+async function deletePay(id) {
+  if (!confirm('Delete this payment template? All monthly records for it will remain but it won\'t appear going forward.')) return;
+  try {
+    await deleteDoc(doc(db,'payment_templates',id));
+    payTemplates = payTemplates.filter(t=>t.id!==id);
+    renderPaySetup();
+    renderPayMonthly();
+    toast('Payment deleted.');
+  } catch(e) { toast('Error: '+e.message); }
+}
+
+async function togglePayActive(id) {
+  const t = payTemplates.find(x=>x.id===id);
+  if (!t) return;
+  const newActive = t.active === false ? true : false;
+  try {
+    await updateDoc(doc(db,'payment_templates',id), {active: newActive});
+    t.active = newActive;
+    renderPaySetup();
+    renderPayMonthly();
+    toast(`Payment ${newActive?'activated':'deactivated'}.`);
+  } catch(e) { toast('Error: '+e.message); }
+}
+
 </script>
 </body>
 </html>
