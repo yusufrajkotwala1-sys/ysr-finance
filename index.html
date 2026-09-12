@@ -203,6 +203,15 @@ tr.inline-row td:last-child{padding-right:16px}
 </head>
 <body>
 
+<!-- ── LOADING ────────────────────────────────────────────── -->
+<div id="loading-screen" style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--surface);position:fixed;inset:0;z-index:9999">
+  <div style="text-align:center">
+    <div style="font-size:22px;font-weight:600;color:var(--accent);margin-bottom:12px">YSR Finance</div>
+    <div class="spinner" style="border-color:rgba(37,99,235,.2);border-top-color:var(--accent);width:28px;height:28px;border-width:3px;margin:0 auto"></div>
+    <div style="color:var(--ink-3);font-size:13px;margin-top:14px">Loading…</div>
+  </div>
+</div>
+
 <!-- ── AUTH ─────────────────────────────────────────────── -->
 <div id="auth-screen">
   <div class="auth-card">
@@ -464,7 +473,8 @@ tr.inline-row td:last-child{padding-right:16px}
 import { initializeApp }           from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, onAuthStateChanged }
                                    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, getDocs, addDoc, updateDoc, deleteDoc,
+import { getFirestore, initializeFirestore, persistentLocalCache, persistentSingleTabManager,
+         doc, setDoc, getDoc, getDocs, addDoc, updateDoc, deleteDoc,
          collection, query, orderBy, onSnapshot, serverTimestamp }
                                    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
@@ -481,7 +491,10 @@ const FB_CONFIG = {
 // Primary app — the logged-in admin session
 const primaryApp  = initializeApp(FB_CONFIG, 'primary');
 const auth        = getAuth(primaryApp);
-const db          = getFirestore(primaryApp);
+// Enable IndexedDB persistence so data survives page reloads and is instant on re-login
+const db = initializeFirestore(primaryApp, {
+  localCache: persistentLocalCache({ tabManager: persistentSingleTabManager() })
+});
 
 // Secondary app — used ONLY to create new users without disturbing the admin session
 const secondaryApp = initializeApp(FB_CONFIG, 'secondary');
@@ -525,7 +538,10 @@ function toast(msg) {
 }
 
 // ── AUTH STATE ───────────────────────────────────────────────────────
+// Use onAuthStateChanged — with IndexedDB persistence, this fires immediately
+// with the cached user on reload (no flicker, no re-login needed after refresh)
 onAuthStateChanged(auth, async user => {
+  $('loading-screen').style.display = 'none';   // always hide loader first
   if (user) {
     currentUser = user;
     await loadProfile();
@@ -653,6 +669,9 @@ function initApp() {
 function subscribeTransactions() {
   if (unsubTx) unsubTx();
   const q = query(collection(db,'transactions'), orderBy('date','desc'));
+  // With IndexedDB persistence enabled, onSnapshot fires instantly from the
+  // local cache on every login/reload, then fires again when the server responds.
+  // This means data is visible immediately — no waiting for network.
   unsubTx = onSnapshot(q, snap => {
     transactions = snap.docs.map(d => ({id:d.id,...d.data()}));
     renderAll();
@@ -660,6 +679,7 @@ function subscribeTransactions() {
     console.error('Snapshot error:', err.code, err.message);
     if (err.code === 'permission-denied') logRulesFix();
   });
+  // getDocs also reads from IndexedDB cache first, then syncs from server
   getDocs(collection(db,'budgets'))
     .then(snap => { budgets = snap.docs.map(d=>({id:d.id,...d.data()})); renderBudget(); })
     .catch(err => console.warn('Budget fetch:', err.code));
