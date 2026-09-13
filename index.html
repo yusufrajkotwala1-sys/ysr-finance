@@ -604,39 +604,50 @@ function initApp(){
 
 // ── REFRESH BUTTON ────────────────────────────────────────────────────
 $('refresh-btn').addEventListener('click',async()=>{
-  toast('Refreshing data…');
+  const btn=$('refresh-btn');
+  btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin .6s linear infinite"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Refreshing…';
+  btn.disabled=true;
   if(unsubTx)unsubTx();
   await loadCategories();
   await loadAllData();
   subscribeAll();
+  btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Refresh';
+  btn.disabled=false;
   toast('Data refreshed ✓');
 });
 
 async function loadAllData(){
   try{
-    const [bs,pts,prs,us]=await Promise.all([
+    const promises=[
       getDocs(collection(db,'budgets')),
       getDocs(collection(db,'payment_templates')),
       getDocs(collection(db,'payment_records')),
-      profile.role==='admin'?getDocs(collection(db,'users')):Promise.resolve(null)
-    ]);
+      getDocs(collection(db,'users')),          // always load — needed for admin page
+    ];
+    const [bs,pts,prs,us]=await Promise.all(promises);
     budgets=bs.docs.map(d=>({id:d.id,...d.data()}));
     payTemplates=pts.docs.map(d=>({id:d.id,...d.data()}));
     payRecords=prs.docs.map(d=>({id:d.id,...d.data()}));
-    if(us)allUsers=us.docs.map(d=>({id:d.id,...d.data()}));
+    allUsers=us.docs.map(d=>({id:d.id,...d.data()}));
     renderAll();
-  }catch(e){console.warn('loadAllData:',e.code,e.message);if(e.code==='permission-denied')logRules()}
+    if(profile.role==='admin')renderUsers();
+  }catch(e){
+    console.warn('loadAllData:',e.code,e.message);
+    if(e.code==='permission-denied')logRules();
+  }
 }
 
 // ── REALTIME SUBSCRIPTION ─────────────────────────────────────────────
 function subscribeAll(){
   if(unsubTx)unsubTx();
+  // First load all non-realtime data immediately
+  loadAllData();
+  // Then subscribe to transactions for live updates
   const q=query(collection(db,'transactions'),orderBy('date','desc'));
   unsubTx=onSnapshot(q,snap=>{
     transactions=snap.docs.map(d=>({id:d.id,...d.data()}));
     renderAll();
   },err=>{console.error('Snapshot:',err.code);if(err.code==='permission-denied')logRules()});
-  loadAllData();
 }
 
 // ── NAV ──────────────────────────────────────────────────────────────
@@ -918,7 +929,9 @@ $('pm-save-btn').addEventListener('click',savePay);
 function openAddPay(){
   editPayId=null;$('pay-modal-title').textContent='Add Recurring Payment';
   $('pm-payee').value=$('pm-desc').value='';$('pm-amount').value=$('pm-day').value='';
-  $('pm-cat').innerHTML=catOpts('expense');$('pay-modal').classList.add('open');
+  $('pm-cat').innerHTML=catOpts('expense');
+  $('pay-modal').classList.add('open');
+  setTimeout(()=>$('pm-payee').focus(),50);
 }
 function openEditPay(id){
   const t=payTemplates.find(x=>x.id===id);if(!t)return;
@@ -931,28 +944,40 @@ async function savePay(){
   const payee=$('pm-payee').value.trim(),amount=parseFloat($('pm-amount').value),dueDay=parseInt($('pm-day').value),cat=$('pm-cat').value,desc=$('pm-desc').value.trim();
   if(!payee||isNaN(amount)||amount<=0||isNaN(dueDay)||dueDay<1||dueDay>31){toast('Fill payee, amount and due day (1–31).');return}
   const data={payee,amount,dueDay,category:cat,description:desc,active:true};
+  const btn=$('pm-save-btn');btn.disabled=true;btn.textContent='Saving…';
   try{
     if(editPayId){
       await updateDoc(doc(db,'payment_templates',editPayId),data);
-      const i=payTemplates.findIndex(x=>x.id===editPayId);if(i>-1)payTemplates[i]={...payTemplates[i],...data};
       toast('Payment updated.');
     }else{
-      const ref=await addDoc(collection(db,'payment_templates'),data);
-      payTemplates.push({id:ref.id,...data});toast('Payment added.');
+      await addDoc(collection(db,'payment_templates'),data);
+      toast('Payment added.');
     }
-    $('pay-modal').classList.remove('open');renderPaySetup();renderPayMonthly();
+    $('pay-modal').classList.remove('open');
+    // Always reload from Firestore to confirm save and show updated list
+    const snap=await getDocs(collection(db,'payment_templates'));
+    payTemplates=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderPaySetup();renderPayMonthly();
   }catch(e){toast('Error: '+e.message)}
+  finally{btn.disabled=false;btn.textContent='Save'}
 }
 async function delPay(id){
   if(!confirm('Delete this payment template?'))return;
-  try{await deleteDoc(doc(db,'payment_templates',id));payTemplates=payTemplates.filter(t=>t.id!==id);renderPaySetup();renderPayMonthly();toast('Deleted.')}
-  catch(e){toast('Error: '+e.message)}
+  try{
+    await deleteDoc(doc(db,'payment_templates',id));
+    payTemplates=payTemplates.filter(t=>t.id!==id);
+    renderPaySetup();renderPayMonthly();toast('Deleted.');
+  }catch(e){toast('Error: '+e.message)}
 }
 async function togPay(id){
   const t=payTemplates.find(x=>x.id===id);if(!t)return;
-  const na=t.active===false;
-  try{await updateDoc(doc(db,'payment_templates',id),{active:na});t.active=na;renderPaySetup();renderPayMonthly();toast(na?'Activated.':'Deactivated.')}
-  catch(e){toast('Error: '+e.message)}
+  const na=!(t.active!==false);
+  try{
+    await updateDoc(doc(db,'payment_templates',id),{active:na});
+    t.active=na;
+    renderPaySetup();renderPayMonthly();
+    toast(na?'Activated.':'Deactivated.');
+  }catch(e){toast('Error: '+e.message)}
 }
 
 // ── DOWNLOAD PAYMENTS CSV ─────────────────────────────────────────────
@@ -1067,8 +1092,12 @@ $('save-budget-btn').addEventListener('click',async()=>{
     if(existing){saves.push(updateDoc(doc(db,'budgets',existing.id),{budgeted:val,updatedAt:serverTimestamp()}))}
     else{saves.push(addDoc(collection(db,'budgets'),{month,category:cat,budgeted:val,period:'month',createdAt:serverTimestamp()}).then(ref=>{budgets.push({id:ref.id,month,category:cat,budgeted:val,period:'month'})}))}
   });
-  try{await Promise.all(saves);const snap=await getDocs(collection(db,'budgets'));budg  try{await Promise.all(saves);const snap=await getDocs(collection(db,'budgets'));budgets=snap.docs.map(d=>({id:d.id,...d.data()}));renderBudget();toast('Budget saved ✓')}
-  catch(e){toast('Error saving: '+e.message)}
+  try{
+    await Promise.all(saves);
+    const snap=await getDocs(collection(db,'budgets'));
+    budgets=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderBudget();toast('Budget saved ✓');
+  }catch(e){toast('Error saving: '+e.message)}
 });
 
 // Download budget CSV
@@ -1144,11 +1173,15 @@ $('dl-report-btn').addEventListener('click',()=>{
 
 // ── ADMIN USERS ───────────────────────────────────────────────────────
 async function loadUsers(){
+  $('user-list').innerHTML='<div class="empty" style="color:var(--ink-3)">Loading users…</div>';
   try{
     const snap=await getDocs(collection(db,'users'));
     allUsers=snap.docs.map(d=>({id:d.id,...d.data()}));
     renderUsers();
-  }catch(e){console.warn('loadUsers:',e.code,e.message);$('user-list').innerHTML='<div class="empty">Could not load users: '+e.message+'</div>'}
+  }catch(e){
+    console.warn('loadUsers:',e.code,e.message);
+    $('user-list').innerHTML='<div class="empty" style="color:var(--red)">Could not load users: '+e.message+'<br><small>Check Firestore rules (F12 console)</small></div>';
+  }
 }
 function renderUsers(){
   const el=$('user-list');
